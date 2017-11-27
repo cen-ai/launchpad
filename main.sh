@@ -12,7 +12,7 @@ source $BASEDIR/common.sh
 
 show_help() {
 cat << EOF
-Usage: $0 OPTIONS <robot name>
+Usage: $0 OPTIONS robot <name>
 
 Options are:
   --puppeteering|-p <IP address>    Launch puppeteering. IP address is the one of the machine that runs Faceshift
