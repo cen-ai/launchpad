@@ -165,11 +165,11 @@ export OPENWEATHERAPPID='1fe4806fc62327aa719a2bb215e983fe'
 export CITY_LIST_FILE=${HR_PREFIX}/data/city.list.json
 export MARKY_MARKOV_DIR='/opt/hansonrobotics/tools/marky_markov'
 export PKD_MODEL="$MARKY_MARKOV_DIR/models/pkd"
-export DISPLAY=:0
+#export DISPLAY=:0
 export PY2ENV_DIR=/opt/hansonrobotics/py2env
 export PY3ENV_DIR=/opt/hansonrobotics/py3env
 export PY2PATH=$PY2ENV_DIR/lib/python2.7/site-packages:$PY2ENV_DIR/lib/python2.7/dist-packages:/usr/lib/python2.7/dist-packages
-export PY3PATH=$PY3ENV_DIR/lib/python3.4/site-packages:$PY3ENV_DIR/lib/python3.4/dist-packages
+export PY3PATH=$PY3ENV_DIR/lib/python3.6/site-packages:$PY3ENV_DIR/lib/python3.6/dist-packages
 
 if [[ -z $NAME ]]; then
     if [[ $AUTONAME == 1 ]]; then
@@ -299,32 +299,7 @@ until rostopic list >/dev/null 2>&1; do sleep 1; info "Waiting for master"; done
 
 info "Starting"
 
-if [[ $HR_ROLE == 'developer' ]]; then
-    WEBUI_HOME=$HR_WORKSPACE/HEAD/src/webui
-else
-    WEBUI_HOME=/opt/hansonrobotics/ros/share/webui
-fi
-
-tmux new-window -n 'rosbridge_ssl' "roslaunch ${ROBOTS_CONFIG_DIR}/rosbridge_ssl.launch ssl:=true certfile:=$WEBUI_HOME/backend/ssl/cert.crt keyfile:=$WEBUI_HOME/backend/ssl/key.pem port:=9094"
-
-WEBPACK_OPTIONS="--optimize-minimize"
-NODE_INTERPRETER="node"
-
-if [[ $DEV_MODE == 1 ]]; then
-  WEBPACK_OPTIONS="-w -dev"
-  NODE_INTERPRETER="nodemon"
-fi
-
-WEBUI_SERVER=$WEBUI_HOME/backend/entry.js
-if [[ ! -f $WEBUI_SERVER ]]; then
-    error "webui is not installed. Run 'hr install head-webui'"
-fi
-
-tmux new-window -n 'webui' "
-    $NODE_INTERPRETER $WEBUI_SERVER -p 4000 -c $ROBOTS_CONFIG_DIR -r $NAME -s &
-    $NODE_INTERPRETER $WEBUI_SERVER -p 8000 -c $ROBOTS_CONFIG_DIR -r $NAME; $SHELL"
-
-tmux new-window -n 'blender' "export PYTHONPATH=$PYTHONPATH:$PY3PATH && cd $HR_PREFIX/tools/blender && blender -y $BLENDER_FILE -P autostart.py; $SHELL"
+tmux new-window -n 'blender' "export PYTHONPATH=/opt/ros/kinetic/lib/python2.7/dist-packages/:$PY3PATH:/opt/hansonrobotics/ros/lib/python2.7/dist-packages && cd $HR_PREFIX/tools/blender && blender -y $BLENDER_FILE -P autostart.py; $SHELL"
 
 if [[ -f $HR_PREFIX/bin/run_tts_server ]]; then
     tmux new-window -n 'servers' "TTSSERVER=$HR_PREFIX/bin/run_tts_server supervisord -n -c $BASEDIR/supervisord.conf; $SHELL"
