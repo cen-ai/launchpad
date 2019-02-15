@@ -308,7 +308,7 @@ else
 fi
 
 if [[ -f $HR_PREFIX/ros/lib/chatbot/run_server.py ]]; then
-    tmux new-window -n 'chatbot' "bash -c \"$HR_PREFIX/py2env/bin/python $HR_PREFIX/ros/lib/chatbot/run_server.py\"; $SHELL"
+    tmux new-window -n 'chatbot' "bash -c \"$HR_PREFIX/py2env/bin/python /root/hansonrobotics/HEAD/install/lib/chatbot/run_server.py\"; $SHELL"
 else
     error "chatbot is not installed. Run 'hr install head-chatbot'"
 fi
